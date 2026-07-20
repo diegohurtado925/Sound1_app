@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#40FFFFFF">
+    <item>
+        <selector>
+            <item android:state_pressed="true">
+                <shape>
+                    <solid android:color="#8A8478" />
+                    <corners android:radius="4dp" />
+                    <stroke android:width="1dp" android:color="#5E584E" />
+                </shape>
+            </item>
+            <item>
+                <layer-list>
+                    <!-- Shadow -->
+                    <item android:top="2dp" android:left="1dp">
+                        <shape>
+                            <solid android:color="#5E584E" />
+                            <corners android:radius="4dp" />
+                        </shape>
+                    </item>
+                    <!-- Main Button Body -->
+                    <item android:bottom="2dp" android:right="1dp">
+                        <shape>
+                            <gradient
+                                android:startColor="#B3ACA0"
+                                android:endColor="#9F998C"
+                                android:angle="270" />
+                            <corners android:radius="4dp" />
+                            <stroke android:width="1dp" android:color="#7D786E" />
+                        </shape>
+                    </item>
+                </layer-list>
+            </item>
+        </selector>
+    </item>
+</ripple>

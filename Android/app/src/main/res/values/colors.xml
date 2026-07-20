@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta Retro DOS / CRT -->
+    <color name="crt_background">#0E140F</color>
+    <color name="crt_green">#82D88C</color>
+    <color name="crt_green_dim">#2a5e30</color>
+
+    <!-- Chasis Analógico -->
+    <color name="chassis_bg">#D7C8B4</color>
+    <color name="chassis_border">#B3A998</color>
+    <color name="button_hardware">#9F998C</color>
+    <color name="button_hardware_dark">#7D786E</color>
+    <color name="text_dark">#3D3934</color>
+    <color name="indicator_orange">#FF9800</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

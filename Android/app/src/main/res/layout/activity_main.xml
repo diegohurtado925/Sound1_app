@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/chassis_bg"
+    android:padding="8dp">
+
+    <!-- Panel Guidelines (48% / 22% / 30%) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.48" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.70" />
+
+    <!-- Vertical Dividers -->
+    <View
+        android:id="@+id/v_divider_1"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@color/chassis_border"
+        app:layout_constraintStart_toStartOf="@id/guide_left" />
+
+    <View
+        android:id="@+id/v_divider_2"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@color/chassis_border"
+        app:layout_constraintStart_toStartOf="@id/guide_middle" />
+
+    <!-- ======================================================= -->
+    <!-- LEFT PANEL: FILE MGMT, CRT & TRANSPORT (MEGA SIZE) -->
+    <!-- ======================================================= -->
+
+    <!-- ADD/REMOVE BUTTONS -->
+    <Button
+        android:id="@+id/btn_add_song"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_margin="6dp"
+        android:background="@drawable/bg_button_hardware"
+        android:text="ADD"
+        android:textColor="@color/text_dark"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btn_remove_song"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_remove_song"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_margin="6dp"
+        android:background="@drawable/bg_button_hardware"
+        android:text="REMOVE"
+        android:textColor="@color/text_dark"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left"
+        app:layout_constraintStart_toEndOf="@+id/btn_add_song"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- CRT MONITOR (Playlist) -->
+    <LinearLayout
+        android:id="@+id/crt_monitor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_crt"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/creative_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_add_song">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📶  9:33 AM"
+                android:textColor="@color/crt_green"
+                android:textSize="18sp"
+                android:fontFamily="monospace" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="📶  🔋"
+                android:textColor="@color/crt_green"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:fadeScrollbars="false">
+            <!-- Song list text is now MEGA LARGE (64sp) -->
+            <TextView
+                android:id="@+id/tv_file_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="[EMPTY PLAYLIST]\nADD SONGS TO START..."
+                android:textColor="@color/crt_green"
+                android:fontFamily="monospace"
+                android:textSize="64sp"
+                android:lineSpacingExtra="16dp"
+                android:textStyle="bold" />
+        </ScrollView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/creative_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="CREATIVE"
+        android:textColor="@color/text_dark"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/divider_h"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left" />
+
+    <View
+        android:id="@+id/divider_h"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="550dp"
+        android:background="@color/chassis_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left" />
+
+    <TextView
+        android:id="@+id/label_song_pos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SONG POSITION"
+        android:textColor="@color/text_dark"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/sb_song_position"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left" />
+
+    <!-- Progress bar is now MEGA (240dp height) -->
+    <SeekBar
+        android:id="@+id/sb_song_position"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        android:layout_marginBottom="20dp"
+        android:progressDrawable="@drawable/song_position_track"
+        android:thumb="@drawable/song_position_thumb"
+        android:splitTrack="false"
+        android:paddingStart="64dp"
+        android:paddingEnd="64dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_transport"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left" />
+
+    <!-- Transport buttons are now MEGA (300dp height) -->
+    <LinearLayout
+        android:id="@+id/layout_transport"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guide_left"
+        android:layout_marginBottom="20dp">
+        <Button android:id="@+id/btn_prev" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="⏮" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textColor="@color/text_dark" android:padding="0dp" android:textSize="120sp"/>
+        <Button android:id="@+id/btn_rew" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="⏪" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textColor="@color/text_dark" android:padding="0dp" android:textSize="120sp"/>
+        <Button android:id="@+id/btn_restart" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="↺" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textColor="@color/text_dark" android:padding="0dp" android:textSize="120sp"/>
+        <Button android:id="@+id/btn_play_music" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1.8" android:text="PLAY" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textSize="80sp" android:textColor="@color/text_dark" android:padding="0dp" android:textStyle="bold"/>
+        <Button android:id="@+id/btn_next" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="⏭" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textColor="@color/text_dark" android:padding="0dp" android:textSize="120sp"/>
+    </LinearLayout>
+
+    <!-- ======================================================= -->
+    <!-- MIDDLE PANEL: MIXER -->
+    <!-- ======================================================= -->
+
+    <TextView
+        android:id="@+id/label_master_mute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="MASTER MUTE"
+        android:textColor="@color/text_dark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guide_left"
+        app:layout_constraintEnd_toStartOf="@id/guide_middle" />
+
+    <ToggleButton
+        android:id="@+id/toggle_mute"
+        android:layout_width="160dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/bg_button_hardware"
+        app:layout_constraintTop_toBottomOf="@+id/label_master_mute"
+        app:layout_constraintStart_toStartOf="@id/guide_left"
+        app:layout_constraintEnd_toStartOf="@id/guide_middle" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mixer_inner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/toggle_mute"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guide_left"
+        app:layout_constraintEnd_toStartOf="@id/guide_middle">
+
+        <TextView android:id="@+id/label_l" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="L" android:textSize="36sp" android:textStyle="bold" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="32dp" app:layout_constraintHorizontal_bias="0.25" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView android:id="@+id/label_r" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="R" android:textSize="36sp" android:textStyle="bold" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="32dp" app:layout_constraintHorizontal_bias="0.75" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
+
+        <SeekBar
+            android:id="@+id/sb_volume_l"
+            android:layout_width="450dp"
+            android:layout_height="120dp"
+            android:rotation="270"
+            android:splitTrack="false"
+            android:progressDrawable="@drawable/fader_track"
+            android:thumb="@drawable/fader_thumb"
+            app:layout_constraintTop_toBottomOf="@+id/label_l"
+            app:layout_constraintBottom_toTopOf="@+id/label_vol_l"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25" />
+
+        <SeekBar
+            android:id="@+id/sb_volume_r"
+            android:layout_width="450dp"
+            android:layout_height="120dp"
+            android:rotation="270"
+            android:splitTrack="false"
+            android:progressDrawable="@drawable/fader_track"
+            android:thumb="@drawable/fader_thumb"
+            app:layout_constraintTop_toBottomOf="@+id/label_r"
+            app:layout_constraintBottom_toTopOf="@+id/label_vol_r"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75" />
+
+        <TextView android:id="@+id/label_vol_l" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOL L" android:gravity="center" android:textSize="24sp" android:textStyle="bold" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="@+id/sb_volume_l" app:layout_constraintEnd_toEndOf="@+id/sb_volume_l" android:layout_marginBottom="60dp"/>
+        <TextView android:id="@+id/label_vol_r" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOL R" android:gravity="center" android:textSize="24sp" android:textStyle="bold" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="@+id/sb_volume_r" app:layout_constraintEnd_toEndOf="@+id/sb_volume_r" android:layout_marginBottom="60dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ======================================================= -->
+    <!-- RIGHT PANEL: METRONOME -->
+    <!-- ======================================================= -->
+    <TextView
+        android:id="@+id/label_metronome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="METRONOME"
+        android:textColor="@color/text_dark"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guide_middle"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/bpm_display_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="12dp"
+        android:background="@drawable/bg_crt"
+        android:padding="20dp"
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintTop_toBottomOf="@+id/label_metronome"
+        app:layout_constraintStart_toStartOf="@id/guide_middle"
+        app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+            android:id="@+id/tv_bpm_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="120.00"
+            android:textColor="@color/crt_green"
+            android:fontFamily="monospace"
+            android:textSize="100sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/label_memory_preset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="MEMORY PRESET"
+        android:textColor="@color/text_dark"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/bpm_display_container"
+        app:layout_constraintStart_toStartOf="@id/guide_middle"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_presets"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/label_memory_preset"
+        app:layout_constraintStart_toStartOf="@id/guide_middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp">
+        <Button android:id="@+id/btn_preset_1" android:layout_width="100dp" android:layout_height="100dp" android:text="1" android:background="@drawable/bg_button_hardware" android:layout_margin="12dp" android:textSize="48sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+        <Button android:id="@+id/btn_preset_2" android:layout_width="100dp" android:layout_height="100dp" android:text="2" android:background="@drawable/bg_button_hardware" android:layout_margin="12dp" android:textSize="48sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+        <Button android:id="@+id/btn_preset_3" android:layout_width="100dp" android:layout_height="100dp" android:text="3" android:background="@drawable/bg_button_hardware" android:layout_margin="12dp" android:textSize="48sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+        <Button android:id="@+id/btn_preset_4" android:layout_width="100dp" android:layout_height="100dp" android:text="4" android:background="@drawable/bg_button_hardware" android:layout_margin="12dp" android:textSize="48sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_metro_controls"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guide_middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="12dp">
+        <Button android:id="@+id/btn_metronome_stop" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="STOP" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textSize="36sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+        <Button android:id="@+id/btn_metronome_play" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1.5" android:text="PLAY" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textSize="36sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+        <Button android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="0.8" android:text="▦" android:background="@drawable/bg_button_hardware" android:layout_margin="6dp" android:textSize="64sp" android:textColor="@color/text_dark" android:padding="0dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
