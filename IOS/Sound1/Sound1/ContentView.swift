@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Estados para simular interactividad básica
+    // Estados principales
     @State private var volumeL: Double = 5.0
     @State private var volumeR: Double = 10.0
     @State private var bpm: Double = 120.0
@@ -16,7 +16,7 @@ struct ContentView: View {
     @State private var isMuted: Bool = false
     @State private var songPosition: Double = 0.3
 
-    // Control de visibilidad del teclado numérico
+    // Control de visibilidad del teclado numérico (Popover)
     @State private var mostrarTecladoPop: Bool = false
 
     // Lista simulada de canciones
@@ -26,24 +26,23 @@ struct ContentView: View {
         "3. KEEPING ROSIDODI.WAV 4:16",
         "4. DESTRORATION.WAV    4:12",
         "5. BONY STABERS.WAV    3:09",
-        "6. THE WVIUM.WAV       3:35",
+        "6. THE WVIUM.WAV       3:35"
     ]
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // Fondo general del chasis retro que ocupa toda la pantalla
-                Color(red: 0.92, green: 0.89, blue: 0.84)
-                    .ignoresSafeArea()
+                // Fondo de Chasis Metálico (Llamado desde RetroModifiers.swift)
+                ChasisMetalBackground()
 
-                // Panel de Control Principal distribuido
+                // Panel de Control Principal
                 VStack {
                     Spacer(minLength: 20)
 
                     // --- PARTE SUPERIOR (Pantallas y Deslizadores) ---
                     HStack(alignment: .top, spacing: 30) {
 
-                        // 1. PANTALLA CRT VERDE (Explorador de Archivos)
+                        // 1. PANTALLA CRT VERDE (Liquid Glass Ahumado)
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
                                 Image(systemName: "cellularbars")
@@ -53,60 +52,57 @@ struct ContentView: View {
                                 Image(systemName: "battery.75")
                             }
                             .font(.system(.caption, design: .monospaced))
-                            .foregroundColor(
-                                Color(red: 0.4, green: 0.8, blue: 0.2)
-                            )
+                            .retroNeonStyle()
                             .padding(.bottom, 5)
 
                             Text("Directory of C:\\MUSIC")
                                 .font(.system(.body, design: .monospaced))
                                 .bold()
+                                .retroNeonStyle()
+                            
                             Text("[DIR] ...")
+                                .font(.system(.subheadline, design: .monospaced))
+                                .retroNeonStyle()
 
                             ForEach(songs, id: \.self) { song in
                                 Text(song)
-                                    .font(
-                                        .system(
-                                            .subheadline,
-                                            design: .monospaced
-                                        )
-                                    )
-                                    .foregroundColor(
-                                        song.contains("2.")
-                                            ? .yellow
-                                            : Color(
-                                                red: 0.4,
-                                                green: 0.8,
-                                                blue: 0.2
-                                            )
-                                    )
+                                    .font(.system(.subheadline, design: .monospaced))
+                                    .retroNeonStyle(color: song.contains("2.") ? Color.yellow : Color(red: 0.4, green: 0.8, blue: 0.2))
                             }
 
                             Spacer()
                             Text("C:\\MUSIC> _")
                                 .font(.system(.body, design: .monospaced))
+                                .bold()
+                                .retroNeonStyle()
                         }
-                        .foregroundColor(Color(red: 0.4, green: 0.8, blue: 0.2))
                         .padding()
                         .frame(maxWidth: .infinity, maxHeight: 300)
-                        .background(Color(red: 0.05, green: 0.12, blue: 0.05))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 4)
+                        .background(
+                            ZStack {
+                                Color(red: 0.03, green: 0.08, blue: 0.03)
+                                Rectangle().fill(.ultraThinMaterial).opacity(0.2)
+                            }
                         )
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(
+                                    LinearGradient(
+                                        colors: [.white.opacity(0.5), .black.opacity(0.8)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 3
+                                )
+                        )
+                        .shadow(color: .black.opacity(0.5), radius: 8, x: 2, y: 4)
 
                         // 2. SECCIÓN CENTRAL (Master Mute y Volumen L/R)
                         VStack(spacing: 12) {
                             Text("MASTER MUTE")
-                                .font(
-                                    .system(
-                                        size: 12,
-                                        weight: .bold,
-                                        design: .monospaced
-                                    )
-                                )
-                                .foregroundColor(.black)
+                                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                                .foregroundColor(.black.opacity(0.8))
 
                             Toggle("", isOn: $isMuted)
                                 .labelsHidden()
@@ -117,14 +113,7 @@ struct ContentView: View {
                                 // --- CONTROL IZQUIERDO (L) ---
                                 VStack(spacing: 8) {
                                     Text("L")
-                                        .font(
-                                            .system(
-                                                size: 14,
-                                                weight: .bold,
-                                                design: .monospaced
-                                            )
-                                        )
-                                        .foregroundColor(.black)
+                                        .font(.system(size: 14, weight: .bold, design: .monospaced))
 
                                     ZStack {
                                         Slider(value: $volumeL, in: -30...30)
@@ -136,27 +125,13 @@ struct ContentView: View {
                                     .frame(width: 40, height: 140)
 
                                     Text("VOLUME L")
-                                        .font(
-                                            .system(
-                                                size: 10,
-                                                weight: .bold,
-                                                design: .monospaced
-                                            )
-                                        )
-                                        .foregroundColor(.black)
+                                        .font(.system(size: 10, weight: .bold, design: .monospaced))
                                 }
 
                                 // --- CONTROL DERECHO (R) ---
                                 VStack(spacing: 8) {
                                     Text("R")
-                                        .font(
-                                            .system(
-                                                size: 14,
-                                                weight: .bold,
-                                                design: .monospaced
-                                            )
-                                        )
-                                        .foregroundColor(.black)
+                                        .font(.system(size: 14, weight: .bold, design: .monospaced))
 
                                     ZStack {
                                         Slider(value: $volumeR, in: -30...30)
@@ -168,16 +143,10 @@ struct ContentView: View {
                                     .frame(width: 40, height: 140)
 
                                     Text("VOLUME R")
-                                        .font(
-                                            .system(
-                                                size: 10,
-                                                weight: .bold,
-                                                design: .monospaced
-                                            )
-                                        )
-                                        .foregroundColor(.black)
+                                        .font(.system(size: 10, weight: .bold, design: .monospaced))
                                 }
                             }
+                            .foregroundColor(.black.opacity(0.85))
                         }
                         .frame(width: 220)
                         .padding(.top, 10)
@@ -185,127 +154,53 @@ struct ContentView: View {
                         // 3. PANTALLA DIGITAL METRÓNOMO (LCD)
                         VStack(spacing: 12) {
                             Text("METRONOME")
-                                .font(
-                                    .system(
-                                        size: 14,
-                                        weight: .bold,
-                                        design: .monospaced
-                                    )
-                                )
-                                .foregroundColor(.black)
+                                .font(.system(size: 14, weight: .bold, design: .monospaced))
+                                .foregroundColor(.black.opacity(0.85))
 
                             ZStack(alignment: .bottomTrailing) {
-                                Color(red: 0.1, green: 0.15, blue: 0.1)
+                                Color(red: 0.05, green: 0.1, blue: 0.05)
 
                                 Text(String(format: "%.2f", bpm))
-                                    .font(
-                                        .system(
-                                            size: 60,
-                                            weight: .bold,
-                                            design: .monospaced
-                                        )
-                                    )
-                                    .foregroundColor(
-                                        Color(red: 0.5, green: 0.9, blue: 0.3)
-                                    )
-                                    .frame(
-                                        maxWidth: .infinity,
-                                        maxHeight: .infinity,
-                                        alignment: .center
-                                    )
-                                    .shadow(
-                                        color: Color(
-                                            red: 0.5,
-                                            green: 0.9,
-                                            blue: 0.3
-                                        ).opacity(0.5),
-                                        radius: 5
-                                    )
+                                    .font(.system(size: 60, weight: .bold, design: .monospaced))
+                                    .retroNeonStyle(color: Color(red: 0.4, green: 0.95, blue: 0.3))
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
 
                                 Text("BPM")
-                                    .font(
-                                        .system(
-                                            size: 14,
-                                            weight: .bold,
-                                            design: .monospaced
-                                        )
-                                    )
-                                    .foregroundColor(
-                                        Color(red: 0.5, green: 0.9, blue: 0.3)
-                                    )
+                                    .font(.system(size: 14, weight: .bold, design: .monospaced))
+                                    .retroNeonStyle(color: Color(red: 0.4, green: 0.95, blue: 0.3))
                                     .padding(8)
                             }
                             .frame(maxWidth: .infinity, maxHeight: 160)
-                            .cornerRadius(6)
+                            .cornerRadius(8)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 6)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        Color(red: 0.4, green: 0.4, blue: 0.4),
-                                        lineWidth: 4
+                                        LinearGradient(
+                                            colors: [.white.opacity(0.4), .black.opacity(0.7)],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 3
                                     )
                             )
+                            .shadow(color: Color.green.opacity(0.15), radius: 12)
 
                             Text("MEMORY PRESET")
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(.gray)
+                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                .foregroundColor(.black.opacity(0.7))
 
+                            // Presets estilo Liquid Glass
                             HStack(spacing: 12) {
-                                ForEach(1...4, id: \.self) { num in
-                                    Button(action: { selectedPreset = num }) {
-                                        VStack(spacing: 4) {
-                                            Circle()
-                                                .fill(
-                                                    selectedPreset == num
-                                                        ? Color.orange
-                                                        : Color.gray.opacity(
-                                                            0.4
-                                                        )
-                                                )
-                                                .frame(width: 8, height: 8)
-                                                .shadow(
-                                                    color: selectedPreset == num
-                                                        ? .orange : .clear,
-                                                    radius: 3
-                                                )
-                                            Text("\(num)")
-                                                .font(
-                                                    .system(
-                                                        size: 20,
-                                                        weight: .bold,
-                                                        design: .monospaced
-                                                    )
-                                                )
-                                                .foregroundColor(
-                                                    .black.opacity(0.85)
-                                                )
-                                        }
-                                        .frame(
-                                            maxWidth: 90,
-                                            maxHeight: 58,
-                                            alignment: .init(
-                                                horizontal: .center,
-                                                vertical: .center
-                                            )
-                                        )  // Incrementada la altura a 58pt
-                                        .background(
-                                            Color(
-                                                red: 0.80,
-                                                green: 0.78,
-                                                blue: 0.74
-                                            )
-                                        )
-                                        .cornerRadius(8)
-                                        .shadow(
-                                            color: .black.opacity(0.3),
-                                            radius: 3,
-                                            x: 1,
-                                            y: 2
+                                    ForEach(1...4, id: \.self) { num in
+                                        BotonPresetPlastico(
+                                            numero: num,
+                                            isSelected: selectedPreset == num,
+                                            action: { selectedPreset = num }
                                         )
                                     }
                                 }
                             }
-                        }
-                        .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal, 30)
 
@@ -315,78 +210,48 @@ struct ContentView: View {
                     VStack(spacing: 15) {
                         VStack(spacing: 4) {
                             Text("SONG POSITION")
-                                .font(
-                                    .system(
-                                        size: 11,
-                                        weight: .semibold,
-                                        design: .monospaced
-                                    )
-                                )
-                                .foregroundColor(.black)
+                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .foregroundColor(.black.opacity(0.8))
                             Slider(value: $songPosition)
                                 .accentColor(.green)
                         }
                         .padding(.horizontal, 30)
 
                         HStack(spacing: 15) {
-                            // Botones inferiores izquierdos
+                            // Botones inferiores izquierdos (Llamados desde BotonesHardware.swift)
                             HStack(spacing: 10) {
-                                BotonHardware(
-                                    icon: "backward.end.fill",
-                                    label: "PREV"
-                                )
-                                BotonHardware(
-                                    icon: "backward.fill",
-                                    label: "REW"
-                                )
-                                BotonHardware(
-                                    icon: "gobackward",
-                                    label: "RESTART"
-                                )
+                                BotonHardware(icon: "backward.end.fill", label: "PREV")
+                                BotonHardware(icon: "backward.fill", label: "REW")
+                                BotonHardware(icon: "gobackward", label: "RESTART")
                                 BotonHardware(icon: "play.fill", label: "PLAY")
-                                BotonHardware(
-                                    icon: "forward.fill",
-                                    label: "NEXT"
-                                )
+                                BotonHardware(icon: "forward.fill", label: "NEXT")
                             }
 
                             Spacer()
 
                             // Botones grandes de Stop, Play y Rejilla
                             HStack(alignment: .bottom, spacing: 15) {
-                                BotonHardwareGrange(
-                                    icon: "square.fill",
-                                    label: "STOP"
-                                )
-                                BotonHardwareGrange(
-                                    icon: "play.fill",
-                                    label: "PLAY"
-                                )
+                                BotonHardwareGrange(icon: "square.fill", label: "STOP")
+                                BotonHardwareGrange(icon: "play.fill", label: "PLAY")
 
                                 VStack(spacing: 4) {
                                     Button(action: {
                                         mostrarTecladoPop = true
                                     }) {
-                                        Image(
-                                            systemName: "square.grid.3x3.fill"
-                                        )
-                                        .font(.title3)
-                                        .foregroundColor(.black.opacity(0.7))
-                                        .frame(width: 60, height: 50)
-                                        .background(
-                                            Color(
-                                                red: 0.75,
-                                                green: 0.73,
-                                                blue: 0.68
+                                        Image(systemName: "square.grid.3x3.fill")
+                                            .font(.title3)
+                                            .foregroundColor(.black.opacity(0.7))
+                                            .frame(width: 60, height: 50)
+                                            .background(.ultraThinMaterial)
+                                            .cornerRadius(8)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(
+                                                        LinearGradient(colors: [.white.opacity(0.6), .black.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                                        lineWidth: 1.5
+                                                    )
                                             )
-                                        )
-                                        .cornerRadius(8)
-                                        .shadow(
-                                            color: .black.opacity(0.3),
-                                            radius: 2,
-                                            x: 1,
-                                            y: 2
-                                        )
+                                            .shadow(color: .black.opacity(0.25), radius: 3, x: 1, y: 2)
                                     }
                                     .popover(
                                         isPresented: $mostrarTecladoPop,
@@ -397,13 +262,7 @@ struct ContentView: View {
                                     }
 
                                     Text(" ")
-                                        .font(
-                                            .system(
-                                                size: 11,
-                                                weight: .bold,
-                                                design: .monospaced
-                                            )
-                                        )
+                                        .font(.system(size: 11, weight: .bold, design: .monospaced))
                                 }
                             }
                         }
@@ -414,12 +273,12 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .overlay(
-                    // Tornillos fijados a las esquinas del iPad
+                    // Tornillos mecánicos (Llamados desde TornilloMetalico.swift o Tornillo.swift)
                     ZStack {
-                        Tornillo().position(x: 25, y: 25)
-                        Tornillo().position(x: geometry.size.width - 25, y: 25)
-                        Tornillo().position(x: 25, y: geometry.size.height - 25)
-                        Tornillo().position(
+                        TornilloMetalico().position(x: 25, y: 25)
+                        TornilloMetalico().position(x: geometry.size.width - 25, y: 25)
+                        TornilloMetalico().position(x: 25, y: geometry.size.height - 25)
+                        TornilloMetalico().position(
                             x: geometry.size.width - 25,
                             y: geometry.size.height - 25
                         )
@@ -427,62 +286,6 @@ struct ContentView: View {
                 )
             }
         }
-    }
-}
-
-struct BotonHardware: View {
-    var icon: String
-    var label: String
-    var body: some View {
-        VStack(spacing: 4) {
-            Button(action: {}) {
-                Image(systemName: icon).font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.black.opacity(0.7)).frame(
-                        width: 70,
-                        height: 45
-                    )
-                    .background(Color(red: 0.78, green: 0.76, blue: 0.72))
-                    .cornerRadius(8)
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 2)
-            }
-            Text(label).font(
-                .system(size: 10, weight: .bold, design: .monospaced)
-            ).foregroundColor(.black)
-        }
-    }
-}
-
-struct BotonHardwareGrange: View {
-    var icon: String
-    var label: String
-    var body: some View {
-        VStack(spacing: 4) {
-            Button(action: {}) {
-                Image(systemName: icon).font(.title3)
-                    .foregroundColor(.black.opacity(0.7)).frame(
-                        width: 90,
-                        height: 50
-                    )
-                    .background(Color(red: 0.78, green: 0.76, blue: 0.72))
-                    .cornerRadius(8)
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 2)
-            }
-            Text(label).font(
-                .system(size: 11, weight: .bold, design: .monospaced)
-            ).foregroundColor(.black)
-        }
-    }
-}
-
-struct Tornillo: View {
-    var body: some View {
-        Circle().fill(Color.gray).frame(width: 14, height: 14)
-            .overlay(
-                Rectangle().fill(Color(red: 0.2, green: 0.2, blue: 0.2)).frame(
-                    width: 9,
-                    height: 2
-                ).rotationEffect(.degrees(45))
-            )
     }
 }
 

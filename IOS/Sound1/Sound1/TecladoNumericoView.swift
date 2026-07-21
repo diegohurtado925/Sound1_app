@@ -100,10 +100,10 @@ struct TecladoNumericoView: View {
         )
         .overlay(
             ZStack {
-                Tornillo().offset(x: -115, y: -205)
-                Tornillo().offset(x: 115, y: -205)
-                Tornillo().offset(x: -115, y: 205)
-                Tornillo().offset(x: 115, y: 205)
+                TornilloMetalico().offset(x: -115, y: -205)
+                TornilloMetalico().offset(x: 115, y: -205)
+                TornilloMetalico().offset(x: -115, y: 205)
+                TornilloMetalico().offset(x: 115, y: 205)
             }
         )
     }
