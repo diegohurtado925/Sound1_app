@@ -65,3 +65,55 @@ struct ChasisMetalBackground: View {
         }
     }
 }
+
+struct RetroScreenFrame: ViewModifier {
+    var outerCornerRadius: CGFloat = 12
+    var innerCornerRadius: CGFloat = 8
+    
+    func body(content: Content) -> some View {
+        content
+            .cornerRadius(innerCornerRadius)
+            .padding(12) // Grosor del marco / bisel de plástico/metal
+            .background(
+                // 1. BASE DEL MARCO (Plástico/Metal extruido con sombras)
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.25, green: 0.23, blue: 0.21), // Sombra superior del marco
+                        Color(red: 0.45, green: 0.42, blue: 0.39), // Brillo central
+                        Color(red: 0.15, green: 0.14, blue: 0.13)  // Sombra inferior profunda
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .cornerRadius(outerCornerRadius)
+            // 2. BISEL EXTERIOR (Borde biselado para dar volumen 3D)
+            .overlay(
+                RoundedRectangle(cornerRadius: outerCornerRadius)
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                .white.opacity(0.6), // Reflejo de luz en la esquina superior izquierda
+                                .black.opacity(0.8)  // Sombra de hundimiento en la esquina inferior derecha
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 2
+                    )
+            )
+            // 3. CANALETA INTERIOR (Efecto de hendidura donde encaja el cristal)
+            .overlay(
+                RoundedRectangle(cornerRadius: innerCornerRadius)
+                    .stroke(Color.black.opacity(0.85), lineWidth: 3)
+                    .padding(10)
+            )
+            .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 4)
+    }
+}
+
+extension View {
+    func retroScreenFrame(outerRadius: CGFloat = 12, innerRadius: CGFloat = 8) -> some View {
+        self.modifier(RetroScreenFrame(outerCornerRadius: outerRadius, innerCornerRadius: innerRadius))
+    }
+}

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    // Instancia de la lógica del metrónomo
+    @StateObject private var metronomo = MetronomeManager()
     // Estados principales
     @State private var volumeL: Double = 5.0
     @State private var volumeR: Double = 10.0
@@ -42,14 +44,12 @@ struct ContentView: View {
                     // --- PARTE SUPERIOR (Pantallas y Deslizadores) ---
                     HStack(alignment: .top, spacing: 30) {
 
-                        // 1. PANTALLA CRT VERDE (Liquid Glass Ahumado)
+                        // 1. PANTALLA CRT VERDE (Explorador de Archivos con Marco Encajado)
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
-                                Image(systemName: "cellularbars")
                                 Spacer()
-                                Text("9:33 AM")
+                                Text("BENJYX925")
                                 Spacer()
-                                Image(systemName: "battery.75")
                             }
                             .font(.system(.caption, design: .monospaced))
                             .retroNeonStyle()
@@ -77,26 +77,9 @@ struct ContentView: View {
                                 .retroNeonStyle()
                         }
                         .padding()
-                        .frame(maxWidth: .infinity, maxHeight: 300)
-                        .background(
-                            ZStack {
-                                Color(red: 0.03, green: 0.08, blue: 0.03)
-                                Rectangle().fill(.ultraThinMaterial).opacity(0.2)
-                            }
-                        )
-                        .cornerRadius(12)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    LinearGradient(
-                                        colors: [.white.opacity(0.5), .black.opacity(0.8)],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
-                                    lineWidth: 3
-                                )
-                        )
-                        .shadow(color: .black.opacity(0.5), radius: 8, x: 2, y: 4)
+                        .frame(maxWidth: .infinity, maxHeight: 280)
+                        .background(Color(red: 0.03, green: 0.08, blue: 0.03)) // Fondo de la pantalla CRT
+                        .retroScreenFrame() // <--- Aplica el marco metálico/plástico 3D
 
                         // 2. SECCIÓN CENTRAL (Master Mute y Volumen L/R)
                         VStack(spacing: 12) {
@@ -106,7 +89,7 @@ struct ContentView: View {
 
                             Toggle("", isOn: $isMuted)
                                 .labelsHidden()
-                                .toggleStyle(SwitchToggleStyle(tint: .orange))
+                                .toggleStyle(SwitchToggleStyle(tint: .red))
                                 .padding(.bottom, 5)
 
                             HStack(spacing: 40) {
@@ -151,8 +134,8 @@ struct ContentView: View {
                         .frame(width: 220)
                         .padding(.top, 10)
 
-                        // 3. PANTALLA DIGITAL METRÓNOMO (LCD)
-                        VStack(spacing: 12) {
+                        // 3. PANTALLA DIGITAL METRÓNOMO (LCD con Marco Encajado)
+                        VStack(spacing: 8) {
                             Text("METRONOME")
                                 .font(.system(size: 14, weight: .bold, design: .monospaced))
                                 .foregroundColor(.black.opacity(0.85))
@@ -170,37 +153,24 @@ struct ContentView: View {
                                     .retroNeonStyle(color: Color(red: 0.4, green: 0.95, blue: 0.3))
                                     .padding(8)
                             }
-                            .frame(maxWidth: .infinity, maxHeight: 160)
-                            .cornerRadius(8)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(
-                                        LinearGradient(
-                                            colors: [.white.opacity(0.4), .black.opacity(0.7)],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ),
-                                        lineWidth: 3
-                                    )
-                            )
-                            .shadow(color: Color.green.opacity(0.15), radius: 12)
+                            .frame(maxWidth: .infinity, maxHeight: 150)
+                            .retroScreenFrame(outerRadius: 10, innerRadius: 6) // <--- Aplica el marco adaptado al tamaño LCD
 
                             Text("MEMORY PRESET")
                                 .font(.system(size: 11, weight: .bold, design: .monospaced))
                                 .foregroundColor(.black.opacity(0.7))
 
-                            // Presets estilo Liquid Glass
                             HStack(spacing: 12) {
-                                    ForEach(1...4, id: \.self) { num in
-                                        BotonPresetPlastico(
-                                            numero: num,
-                                            isSelected: selectedPreset == num,
-                                            action: { selectedPreset = num }
-                                        )
-                                    }
+                                ForEach(1...4, id: \.self) { num in
+                                    BotonPresetPlastico(
+                                        numero: num,
+                                        isSelected: selectedPreset == num,
+                                        action: { selectedPreset = num }
+                                    )
                                 }
                             }
-                            .frame(maxWidth: .infinity)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal, 30)
 
