@@ -119,8 +119,13 @@ struct ContentView: View {
                                 .labelsHidden()
                                 .toggleStyle(SwitchToggleStyle(tint: .red))
                                 .padding(.bottom, 5)
+                                .onChange(of: isMuted) { nuevoMute in
+                                    playlist.actualizarVolumen(isMuted: nuevoMute)
+                                    metronomo.actualizarVolumen(isMuted: nuevoMute)
+                                }
 
                             HStack(spacing: 40) {
+                                // CANAL IZQUIERDO (Música)
                                 VStack(spacing: 8) {
                                     Text("L").font(.system(size: 14, weight: .bold, design: .monospaced))
                                     ZStack {
@@ -129,11 +134,16 @@ struct ContentView: View {
                                             .rotationEffect(.degrees(-90))
                                             .frame(width: 140, height: 20)
                                             .disabled(isMuted)
+                                            // 🎚️ Sincroniza el Slider L con el volumen de la música
+                                            .onChange(of: volumeL) { nuevoValor in
+                                                playlist.actualizarVolumen(sliderValue: nuevoValor)
+                                            }
                                     }
                                     .frame(width: 40, height: 140)
                                     Text("VOLUME L").font(.system(size: 10, weight: .bold, design: .monospaced))
                                 }
 
+                                // CANAL DERECHO (Metrónomo)
                                 VStack(spacing: 8) {
                                     Text("R").font(.system(size: 14, weight: .bold, design: .monospaced))
                                     ZStack {
@@ -142,6 +152,10 @@ struct ContentView: View {
                                             .rotationEffect(.degrees(-90))
                                             .frame(width: 140, height: 20)
                                             .disabled(isMuted)
+                                            // 🎚️ Sincroniza el Slider R con el volumen del metrónomo
+                                            .onChange(of: volumeR) { nuevoValor in
+                                                metronomo.actualizarVolumen(sliderValue: nuevoValor)
+                                            }
                                     }
                                     .frame(width: 40, height: 140)
                                     Text("VOLUME R").font(.system(size: 10, weight: .bold, design: .monospaced))
@@ -222,13 +236,14 @@ struct ContentView: View {
                     Spacer()
 
                     // --- PARTE INFERIOR ---
+                    // --- PARTE INFERIOR (Transporte de Pista + Metrónomo) ---
                     VStack(spacing: 15) {
+                        // 🎚️ BARRA DE POSICIÓN DE CANCIÓN (SEEKING)
                         VStack(spacing: 4) {
                             Text("SONG POSITION")
                                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                                 .foregroundColor(.black.opacity(0.8))
                             
-                            // 🎚️ BARRA INTERACTIVA CON BÚSQUEDA DIRECTA (SEEK)
                             Slider(
                                 value: Binding(
                                     get: { isEditingSlider ? sliderTempTime : playlist.currentTime },
@@ -238,7 +253,6 @@ struct ContentView: View {
                                 onEditingChanged: { editing in
                                     isEditingSlider = editing
                                     if !editing {
-                                        // Al soltar el Slider, cambia la posición del audio
                                         playlist.buscarTiempo(sliderTempTime)
                                     }
                                 }
@@ -247,36 +261,44 @@ struct ContentView: View {
                         }
                         .padding(.horizontal, 30)
 
+                        // 🎛️ FILA DE BOTONES GRANDES UNIFICADOS
                         HStack(spacing: 15) {
-                            // 🎛️ BOTONES DE TRANSPORTE CONECTADOS DIRECTAMENTE CON ACCIONES
+                            
+                            // --- SECCIÓN 1: CONTROLES DE LA CANCIÓN ---
                             HStack(spacing: 10) {
+                                // Botones de salto rápido (PREV / NEXT)
                                 BotonHardware(icon: "backward.end.fill", label: "PREV", action: {
                                     playlist.anteriorCancion()
                                 })
                                 
-                                BotonHardware(icon: "stop.fill", label: "STOP", action: {
-                                    playlist.detener()
-                                })
+                                // Botón STOP de Canción (Tamaño Grande)
+                                Button(action: { playlist.detener() }) {
+                                    BotonHardwareGrange(icon: "square.fill", label: "STOP", isActive: !playlist.isPlaying)
+                                }
                                 
-                                BotonHardware(icon: "gobackward", label: "RESTART", action: {
-                                    playlist.reiniciarCancion()
-                                })
-                                
-                                BotonHardware(
-                                    icon: playlist.isPlaying ? "pause.fill" : "play.fill",
-                                    label: "PLAY",
-                                    action: { playlist.playPause() }
-                                )
+                                // Botón PLAY / PAUSE de Canción (Tamaño Grande)
+                                Button(action: { playlist.playPause() }) {
+                                    BotonHardwareGrange(icon: playlist.isPlaying ? "pause.fill" : "play.fill", label: "PLAY", isActive: playlist.isPlaying)
+                                }
                                 
                                 BotonHardware(icon: "forward.fill", label: "NEXT", action: {
                                     playlist.siguienteCancion()
                                 })
+                                
+                                // 🔄 BOTÓN AUTO PLAY (Conmutador On/Off con indicador de estado)
+                                Button(action: { playlist.toggleAutoPlay() }) {
+                                    BotonHardwareGrange(
+                                        icon: "repeat",
+                                        label: "AUTO PLAY",
+                                        isActive: playlist.isAutoPlayEnabled
+                                    )
+                                }
                             }
 
                             Spacer()
 
-                            // BOTONES DEL METRÓNOMO
-                            HStack(alignment: .bottom, spacing: 15) {
+                            // --- SECCIÓN 2: CONTROLES DEL METRÓNOMO Y TECLADO ---
+                            HStack(alignment: .bottom, spacing: 12) {
                                 Button(action: { metronomo.stop() }) {
                                     BotonHardwareGrange(icon: "square.fill", label: "STOP", isActive: !metronomo.isPlaying)
                                 }

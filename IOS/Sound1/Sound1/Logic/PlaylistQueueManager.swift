@@ -12,16 +12,41 @@ import Combine
 
 class PlaylistQueueManager: ObservableObject {
     @Published var queue: [SongModel] = []
-    @Published var currentIndex: Int = 0 // Control del índice activo sin borrar elementos
+    @Published var currentIndex: Int = 0
     @Published var currentSong: SongModel?
     @Published var isPlaying: Bool = false
     @Published var currentTime: Double = 0.0
     @Published var duration: Double = 0.0
+    @Published var isAutoPlayEnabled: Bool = true // Auto Play
+    
+    @Published var volume: Float = 1.0 // Rango de 0.0 a 1.0
+    @Published var isMuted: Bool = false {
+        didSet { actualizarVolumen() }
+    }
+    
+    func actualizarVolumen(sliderValue: Double? = nil, isMuted: Bool? = nil) {
+        if let isMuted = isMuted {
+            self.isMuted = isMuted
+        }
+        
+        if let sliderValue = sliderValue {
+            let volumenNormalizado = Float(max(0, (sliderValue + 30) / 60.0))
+            self.volume = volumenNormalizado
+        }
+        
+        // Si Master Mute está activo, el volumen pasa a 0
+        audioPlayer?.volume = self.isMuted ? 0.0 : self.volume
+    }
+        
+    
+    
+    
+    
     
     private var audioPlayer: AVAudioPlayer?
     private var timer: Timer?
     
-    // --- 1. AGREGAR A LA LISTA ---
+    // --- 1. AGREGAR A LA PLAYLIST ---
     func agregarACola(url: URL) {
         guard url.startAccessingSecurityScopedResource() else { return }
         defer { url.stopAccessingSecurityScopedResource() }
@@ -45,8 +70,6 @@ class PlaylistQueueManager: ObservableObject {
         
         DispatchQueue.main.async {
             self.queue.append(nuevaCancion)
-            
-            // Si es la primera canción cargada, se selecciona sin borrar
             if self.currentSong == nil {
                 self.currentIndex = 0
                 self.cargarCancionActual()
@@ -54,7 +77,11 @@ class PlaylistQueueManager: ObservableObject {
         }
     }
     
-    // --- 2. CONTROLES DE NAVEGACIÓN Y REPRODUCCIÓN ---
+    // --- 2. CONTROLES Y NAVEGACIÓN ---
+    func toggleAutoPlay() {
+        isAutoPlayEnabled.toggle()
+    }
+    
     func cargarCancionActual() {
         detener()
         guard !queue.isEmpty, queue.indices.contains(currentIndex) else {
@@ -72,7 +99,7 @@ class PlaylistQueueManager: ObservableObject {
         if currentIndex + 1 < queue.count {
             currentIndex += 1
         } else {
-            currentIndex = 0 // Vuelve al inicio si llega al final
+            currentIndex = 0
         }
         cargarCancionActual()
     }
@@ -95,6 +122,12 @@ class PlaylistQueueManager: ObservableObject {
             player.play()
             isPlaying = true
         }
+    }
+    
+    func buscarTiempo(_ tiempo: Double) {
+        guard let player = audioPlayer else { return }
+        player.currentTime = tiempo
+        self.currentTime = tiempo
     }
     
     func playPause() {
@@ -122,12 +155,6 @@ class PlaylistQueueManager: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
-
-    func buscarTiempo(_ tiempo: Double) {
-        guard let player = audioPlayer else { return }
-        player.currentTime = tiempo
-        self.currentTime = tiempo
-    }
     
     // --- 3. REPRODUCCIÓN DE AUDIO (Canal Izquierdo) ---
     private func iniciarReproduccion(url: URL) {
@@ -137,7 +164,7 @@ class PlaylistQueueManager: ObservableObject {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer?.prepareToPlay()
             
-            // 🎧 Panorámica al canal IZQUIERDO (-1.0) para la pista de audio
+            // 🎧 Pista de audio ruteada únicamente al canal IZQUIERDO (-1.0)
             audioPlayer?.pan = -1.0
             
             duration = audioPlayer?.duration ?? 0.0
@@ -151,15 +178,20 @@ class PlaylistQueueManager: ObservableObject {
         }
     }
     
+    // ⏱️ TIMER ÚNICO Y CONTROL DE AUTO PLAY
     private func iniciarTimerProgreso() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self = self, let player = self.audioPlayer else { return }
             self.currentTime = player.currentTime
             
-            // Avance automático a la siguiente canción al finalizar
+            // Al finalizar la canción, verifica si Auto Play está activo
             if !player.isPlaying && self.isPlaying {
-                self.siguienteCancion()
+                if self.isAutoPlayEnabled {
+                    self.siguienteCancion()
+                } else {
+                    self.detener()
+                }
             }
         }
     }

@@ -23,6 +23,26 @@ class MetronomeManager: ObservableObject {
         4: 165.0
     ]
     
+    @Published var volume: Float = 1.0
+    @Published var isMuted: Bool = false {
+        didSet { actualizarVolumen() }
+    }
+
+    func actualizarVolumen(sliderValue: Double? = nil, isMuted: Bool? = nil) {
+        if let isMuted = isMuted {
+            self.isMuted = isMuted
+        }
+        
+        if let sliderValue = sliderValue {
+            // Mapeo del Slider (-30 a +30) a (0.0 a 1.0)
+            let volumenNormalizado = Float(max(0, (sliderValue + 30) / 60.0))
+            self.volume = volumenNormalizado
+        }
+        
+        let volumenFinal = self.isMuted ? 0.0 : self.volume
+        playerNode.volume = volumenFinal
+    }
+    
     private var timer: Timer?
     private var audioEngine: AVAudioEngine = AVAudioEngine()
     private var playerNode: AVAudioPlayerNode = AVAudioPlayerNode()
